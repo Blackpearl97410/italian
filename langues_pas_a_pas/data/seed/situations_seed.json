@@ -1,0 +1,329 @@
+{
+  "source": {
+    "name": "Contenu editorial V1+ reformule avec reperes CECRL et sources ouvertes",
+    "url": "manual://langues-pas-a-pas/v1-plus-seed",
+    "source_type": "manual_editorial_content",
+    "license": "manual",
+    "retrieved_at": "2026-07-07",
+    "reliability_score": 4,
+    "notes": "Phrases et explications creees manuellement. Niveaux inspires des descripteurs CECRL du Conseil de l'Europe. Licences ouvertes documentees pour futurs imports Tatoeba/Wiktionary, sans copie massive."
+  },
+  "situations": [
+    {
+      "slug": "se-presenter",
+      "title": "Se presenter",
+      "level": "A1",
+      "objective": "Savoir donner son nom, son origine et demander le nom de quelqu'un.",
+      "order_index": 1,
+      "phrases": [
+        {
+          "fr_text": "Je m'appelle Alexandre.",
+          "en_text": "My name is Alexandre.",
+          "it_text": "Mi chiamo Alexandre.",
+          "explanation": "En anglais, My name is est la formule neutre et naturelle. En italien, Mi chiamo ressemble davantage au francais Je m'appelle.",
+          "common_trap": "Eviter I call myself Alexandre dans une presentation courante."
+        },
+        {
+          "fr_text": "Je suis francais.",
+          "en_text": "I am French.",
+          "it_text": "Sono francese.",
+          "explanation": "Les trois langues utilisent le verbe etre, mais l'italien omet souvent le pronom sujet: Sono suffit.",
+          "common_trap": "Ne pas ajouter systematiquement io en italien: Io sono est possible, mais souvent inutile."
+        },
+        {
+          "fr_text": "Comment vous appelez-vous ?",
+          "en_text": "What is your name?",
+          "it_text": "Come si chiama?",
+          "explanation": "L'anglais demande litteralement le nom. L'italien, comme le francais, utilise une forme proche de s'appeler.",
+          "common_trap": "What do you call yourself? est grammatical, mais inhabituel pour demander le nom."
+        }
+      ],
+      "grammar_points": [
+        {
+          "title": "Se presenter sans traduire mot a mot",
+          "explanation": "Les formules sociales sont souvent idiomatiques: on apprend la phrase naturelle avant la traduction litterale.",
+          "example_fr": "Je m'appelle Alexandre.",
+          "example_en": "My name is Alexandre.",
+          "example_it": "Mi chiamo Alexandre."
+        }
+      ],
+      "exercises": [
+        {
+          "phrase_fr": "Je m'appelle Alexandre.",
+          "type": "multiple_choice",
+          "question": "Comment dit-on \"Je m'appelle Alexandre\" en anglais ?",
+          "correct_answer": "My name is Alexandre",
+          "options": ["My name is Alexandre", "I call myself Alexandre", "I have name Alexandre", "Me name Alexandre"],
+          "explanation_correct": "C'est la formule naturelle pour donner son nom en anglais.",
+          "explanation_wrong": "En anglais courant, on utilise My name is ou I'm pour se presenter. I call myself est comprehensible, mais ce n'est pas la formulation naturelle ici.",
+          "difficulty": 1
+        },
+        {
+          "phrase_fr": "Je suis francais.",
+          "type": "fill_blank",
+          "question": "Completez : I ___ French.",
+          "correct_answer": "am",
+          "options": [],
+          "explanation_correct": "Avec I, le verbe etre se conjugue am.",
+          "explanation_wrong": "En anglais, on dit I am French. L'italien Sono francese peut omettre le sujet, mais l'anglais garde I.",
+          "difficulty": 1
+        },
+        {
+          "phrase_fr": "Comment vous appelez-vous ?",
+          "type": "matching",
+          "question": "Associez: Comment vous appelez-vous ?",
+          "correct_answer": "What is your name? / Come si chiama?",
+          "options": ["What is your name? / Come si chiama?", "Where are you? / Dove va?", "How old are you? / Quanti anni ha?"],
+          "explanation_correct": "Les deux formulations sont les equivalents naturels.",
+          "explanation_wrong": "Pour demander le nom, l'anglais privilegie What is your name? et l'italien Come si chiama?.",
+          "difficulty": 1
+        }
+      ]
+    },
+    {
+      "slug": "saluer",
+      "title": "Saluer et prendre conge",
+      "level": "A1",
+      "objective": "Savoir saluer poliment et quitter une conversation simple.",
+      "order_index": 2,
+      "phrases": [
+        {
+          "fr_text": "Bonjour.",
+          "en_text": "Hello.",
+          "it_text": "Buongiorno.",
+          "explanation": "Hello est general en anglais. Buongiorno signifie aussi bonne journee et s'utilise comme salutation de jour.",
+          "common_trap": "Ciao est courant en italien, mais plus familier que Buongiorno."
+        },
+        {
+          "fr_text": "Bonsoir.",
+          "en_text": "Good evening.",
+          "it_text": "Buonasera.",
+          "explanation": "Les trois langues ont une salutation de soir. En anglais, Good night sert plutot a dire bonne nuit ou quitter tard.",
+          "common_trap": "Ne pas utiliser Good night pour dire bonsoir en arrivant."
+        },
+        {
+          "fr_text": "A bientot.",
+          "en_text": "See you soon.",
+          "it_text": "A presto.",
+          "explanation": "Les trois expressions annoncent que l'on espere revoir la personne prochainement.",
+          "common_trap": "See you soon n'est pas une traduction mot a mot de A bientot, mais c'est l'equivalent naturel."
+        }
+      ],
+      "grammar_points": [
+        {
+          "title": "Registre formel et informel",
+          "explanation": "Choisir la salutation depend du contexte: ami, commerce, entretien ou message professionnel.",
+          "example_fr": "Bonjour.",
+          "example_en": "Hello.",
+          "example_it": "Buongiorno."
+        }
+      ],
+      "exercises": [
+        {
+          "phrase_fr": "Bonsoir.",
+          "type": "multiple_choice",
+          "question": "Quelle formule anglaise correspond a \"Bonsoir\" quand on arrive ?",
+          "correct_answer": "Good evening",
+          "options": ["Good evening", "Good night", "Good bye", "Good morning"],
+          "explanation_correct": "Good evening sert a saluer le soir.",
+          "explanation_wrong": "Good night sert plutot a dire bonne nuit ou a prendre conge tard. Pour saluer le soir, dites Good evening.",
+          "difficulty": 1
+        },
+        {
+          "phrase_fr": "A bientot.",
+          "type": "fill_blank",
+          "question": "Completez : See you ___.",
+          "correct_answer": "soon",
+          "options": [],
+          "explanation_correct": "See you soon correspond a A bientot.",
+          "explanation_wrong": "L'expression naturelle est See you soon. En italien, on dit A presto.",
+          "difficulty": 1
+        }
+      ]
+    },
+    {
+      "slug": "commander-restaurant",
+      "title": "Commander au restaurant",
+      "level": "A1",
+      "objective": "Commander simplement, demander l'addition et exprimer une preference.",
+      "order_index": 3,
+      "phrases": [
+        {
+          "fr_text": "Je voudrais un cafe.",
+          "en_text": "I would like a coffee.",
+          "it_text": "Vorrei un caffe.",
+          "explanation": "L'anglais utilise I would like pour une demande polie. L'italien Vorrei est tres compact et poli.",
+          "common_trap": "I want a coffee est correct mais peut sembler trop direct."
+        },
+        {
+          "fr_text": "L'addition, s'il vous plait.",
+          "en_text": "The bill, please.",
+          "it_text": "Il conto, per favore.",
+          "explanation": "Les trois langues utilisent une formule courte. En anglais britannique, bill est courant; aux Etats-Unis, check est frequent.",
+          "common_trap": "Addition ne se traduit pas par addition en anglais dans ce contexte."
+        },
+        {
+          "fr_text": "Je suis vegetarien.",
+          "en_text": "I am vegetarian.",
+          "it_text": "Sono vegetariano.",
+          "explanation": "La structure avec etre est proche dans les trois langues, mais l'italien accorde souvent l'adjectif.",
+          "common_trap": "En italien, vegetariano devient vegetariana pour une femme."
+        }
+      ],
+      "grammar_points": [
+        {
+          "title": "Demander poliment",
+          "explanation": "I would like et Vorrei adoucissent la demande, contrairement a je veux / I want / voglio.",
+          "example_fr": "Je voudrais un cafe.",
+          "example_en": "I would like a coffee.",
+          "example_it": "Vorrei un caffe."
+        }
+      ],
+      "exercises": [
+        {
+          "phrase_fr": "Je voudrais un cafe.",
+          "type": "fill_blank",
+          "question": "Completez : I would ___ a coffee.",
+          "correct_answer": "like",
+          "options": [],
+          "explanation_correct": "I would like est une demande polie.",
+          "explanation_wrong": "La formule attendue est I would like a coffee. I want est plus direct.",
+          "difficulty": 1
+        },
+        {
+          "phrase_fr": "L'addition, s'il vous plait.",
+          "type": "error_correction",
+          "question": "Corrigez l'erreur : The addition, please.",
+          "correct_answer": "The bill, please",
+          "options": [],
+          "explanation_correct": "Bill est le mot naturel pour l'addition dans ce contexte.",
+          "explanation_wrong": "Addition en francais ne devient pas addition en anglais au restaurant. Dites The bill, please, ou The check, please aux Etats-Unis.",
+          "difficulty": 2
+        }
+      ]
+    },
+    {
+      "slug": "demander-chemin",
+      "title": "Demander son chemin",
+      "level": "A2",
+      "objective": "Demander une direction et comprendre une indication simple.",
+      "order_index": 4,
+      "phrases": [
+        {
+          "fr_text": "Ou est la gare ?",
+          "en_text": "Where is the train station?",
+          "it_text": "Dov'e la stazione?",
+          "explanation": "L'anglais precise train station. L'italien stazione suffit souvent si le contexte est clair.",
+          "common_trap": "Station en anglais peut designer plusieurs types de station; train station est plus clair."
+        },
+        {
+          "fr_text": "Tournez a gauche.",
+          "en_text": "Turn left.",
+          "it_text": "Giri a sinistra.",
+          "explanation": "L'anglais utilise l'imperatif simple. L'italien peut employer une forme polie avec Giri.",
+          "common_trap": "Left n'est pas leave. Sinistra signifie gauche."
+        },
+        {
+          "fr_text": "C'est tout droit.",
+          "en_text": "It is straight ahead.",
+          "it_text": "E sempre dritto.",
+          "explanation": "L'anglais dit straight ahead. L'italien utilise souvent dritto pour indiquer tout droit.",
+          "common_trap": "Right peut vouloir dire droite, pas tout droit."
+        }
+      ],
+      "grammar_points": [
+        {
+          "title": "Ou et Where",
+          "explanation": "Pour localiser un lieu, l'anglais utilise Where is, l'italien Dov'e.",
+          "example_fr": "Ou est la gare ?",
+          "example_en": "Where is the train station?",
+          "example_it": "Dov'e la stazione?"
+        }
+      ],
+      "exercises": [
+        {
+          "phrase_fr": "Ou est la gare ?",
+          "type": "multiple_choice",
+          "question": "Quelle phrase anglaise est la plus claire pour demander la gare ?",
+          "correct_answer": "Where is the train station?",
+          "options": ["Where is the train station?", "Where is the stationing?", "Where station is?", "Where the train?"],
+          "explanation_correct": "Where is the train station? est naturel et precis.",
+          "explanation_wrong": "En anglais, l'ordre est Where is + nom. Train station evite l'ambiguite.",
+          "difficulty": 1
+        },
+        {
+          "phrase_fr": "Tournez a gauche.",
+          "type": "matching",
+          "question": "Associez: Tournez a gauche.",
+          "correct_answer": "Turn left / Giri a sinistra",
+          "options": ["Turn left / Giri a sinistra", "Turn right / Giri a destra", "Go straight / Sempre dritto"],
+          "explanation_correct": "Left et sinistra indiquent la gauche.",
+          "explanation_wrong": "Attention au faux ami: left signifie gauche; leave signifie partir.",
+          "difficulty": 1
+        }
+      ]
+    },
+    {
+      "slug": "exprimer-gouts",
+      "title": "Exprimer ses gouts",
+      "level": "A1",
+      "objective": "Dire ce que l'on aime, ce que l'on prefere et exprimer la faim.",
+      "order_index": 5,
+      "phrases": [
+        {
+          "fr_text": "J'aime la musique.",
+          "en_text": "I like music.",
+          "it_text": "Mi piace la musica.",
+          "explanation": "L'anglais utilise I like. L'italien Mi piace signifie litteralement la musique me plait.",
+          "common_trap": "Ne pas traduire Mi piace mot a mot en anglais."
+        },
+        {
+          "fr_text": "Je prefere le the.",
+          "en_text": "I prefer tea.",
+          "it_text": "Preferisco il te.",
+          "explanation": "Les trois langues ont un verbe proche pour preferer, mais l'anglais omet souvent l'article general.",
+          "common_trap": "I prefer the tea parle d'un the precis, pas du the en general."
+        },
+        {
+          "fr_text": "J'ai faim.",
+          "en_text": "I am hungry.",
+          "it_text": "Ho fame.",
+          "explanation": "Le francais et l'italien utilisent avoir: J'ai faim / Ho fame. L'anglais utilise etre: I am hungry.",
+          "common_trap": "Ne pas dire I have hunger dans une conversation courante."
+        }
+      ],
+      "grammar_points": [
+        {
+          "title": "Avoir faim ou etre hungry",
+          "explanation": "Certaines sensations changent de verbe selon la langue. Il faut memoriser la structure complete.",
+          "example_fr": "J'ai faim.",
+          "example_en": "I am hungry.",
+          "example_it": "Ho fame."
+        }
+      ],
+      "exercises": [
+        {
+          "phrase_fr": "J'ai faim.",
+          "type": "error_correction",
+          "question": "Corrigez l'erreur : I have hungry.",
+          "correct_answer": "I am hungry",
+          "options": [],
+          "explanation_correct": "En anglais, hungry s'utilise avec le verbe etre.",
+          "explanation_wrong": "En anglais, on dit I am hungry. Le francais et l'italien utilisent avoir: J'ai faim / Ho fame.",
+          "difficulty": 2
+        },
+        {
+          "phrase_fr": "J'aime la musique.",
+          "type": "multiple_choice",
+          "question": "Quel equivalent italien correspond a \"J'aime la musique\" ?",
+          "correct_answer": "Mi piace la musica",
+          "options": ["Mi piace la musica", "Io like la musica", "Ho piace musica", "Sono musica"],
+          "explanation_correct": "Mi piace la musica est la structure naturelle en italien.",
+          "explanation_wrong": "L'italien utilise Mi piace, une structure differente de I like. Retenez la phrase complete.",
+          "difficulty": 1
+        }
+      ]
+    }
+  ]
+}
+
