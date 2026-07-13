@@ -27,6 +27,17 @@ Dans `Authentication > Providers`, verifier que `Email` est active.
 Pour un premier test plus fluide, tu peux desactiver temporairement la confirmation email dans
 `Authentication > Sign In / Providers > Email`, puis la reactiver plus tard.
 
+Toujours dans `Authentication > Sign In / Providers > Email`, verifier aussi que les
+inscriptions email sont autorisees. Dans la config Supabase, cela correspond a:
+
+```toml
+[auth.email]
+enable_signup = true
+```
+
+Si ce reglage est desactive, l'app affiche `Email signups are disabled` et aucun
+nouveau compte ne peut etre cree depuis le formulaire.
+
 ## 3. Renseigner la cle anon
 
 Dans `Project Settings > API`, copier la cle `anon public`, puis modifier:

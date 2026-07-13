@@ -152,6 +152,20 @@ function showLoginMessage(message, isError = true) {
   target.classList.toggle("ok", !isError);
 }
 
+function friendlyAuthError(error) {
+  const message = error?.message || String(error || "Erreur Supabase inconnue.");
+  if (message.toLowerCase().includes("email signups are disabled")) {
+    return "Les inscriptions email sont desactivees dans Supabase. Va dans Authentication > Sign In / Providers > Email, puis active Email et Email signups.";
+  }
+  if (message.toLowerCase().includes("email not confirmed")) {
+    return "Email non confirme. Valide le lien recu par email, puis reconnecte-toi.";
+  }
+  if (message.toLowerCase().includes("invalid login credentials")) {
+    return "Email ou mot de passe incorrect.";
+  }
+  return message;
+}
+
 function setAuthBusy(isBusy) {
   document.querySelector("#login-button").disabled = isBusy;
   document.querySelector("#create-profile-button").disabled = isBusy;
@@ -466,7 +480,7 @@ async function createRemoteProfile() {
       options: { data: { display_name: displayName } },
     });
     if (error) {
-      renderLogin(error.message);
+      renderLogin(friendlyAuthError(error));
       return;
     }
     if (!data.session) {
@@ -504,7 +518,7 @@ async function loginRemoteProfile() {
     }
     const { data, error } = await appState.supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      renderLogin(error.message);
+      renderLogin(friendlyAuthError(error));
       return;
     }
     if (displayName) await upsertRemoteProfile(data.user.id, displayName);
