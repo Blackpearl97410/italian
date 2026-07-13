@@ -336,28 +336,12 @@ function bindImportActions() {
 }
 
 function renderLogin(message = "") {
-  const select = document.querySelector("#profile-select");
-  const localProfileRow = document.querySelector("#local-profile-row");
   const modeCopy = document.querySelector("#auth-mode-copy");
   const isSupabase = appState.backend === "supabase";
-  localProfileRow.hidden = isSupabase;
-  localProfileRow.style.display = isSupabase ? "none" : "";
   modeCopy.textContent =
     isSupabase
       ? "Connexion Supabase: tes progres et ton tableau de bord sont synchronises en ligne."
       : "Mode local: renseigne supabase-config.js pour activer la base de donnees en ligne.";
-  select.innerHTML = "";
-  if (!appState.store.users.length) {
-    select.innerHTML = `<option value="">Aucun profil local</option>`;
-  } else {
-    appState.store.users.forEach((user) => {
-      const option = document.createElement("option");
-      option.value = user.id;
-      option.textContent = user.name;
-      option.selected = user.id === appState.store.currentUserId;
-      select.appendChild(option);
-    });
-  }
   document.querySelector("#login-message").textContent = message;
 }
 
@@ -366,10 +350,15 @@ async function createProfile() {
     await createRemoteProfile();
     return;
   }
+  const email = document.querySelector("#profile-email").value.trim();
   const nameInput = document.querySelector("#profile-name");
   const passwordInput = document.querySelector("#profile-password");
   const name = nameInput.value.trim();
   const password = passwordInput.value;
+  if (!email.includes("@")) {
+    renderLogin("Renseigne un email valide.");
+    return;
+  }
   if (name.length < 2) {
     renderLogin("Le nom du profil doit contenir au moins 2 caracteres.");
     return;
@@ -378,13 +367,14 @@ async function createProfile() {
     renderLogin("Le mot de passe local doit contenir au moins 4 caracteres.");
     return;
   }
-  const exists = appState.store.users.some((user) => normalize(user.name) === normalize(name));
+  const exists = appState.store.users.some((user) => normalize(user.email) === normalize(email));
   if (exists) {
-    renderLogin("Ce nom de profil existe deja.");
+    renderLogin("Un profil local existe deja pour cet email.");
     return;
   }
   const user = {
     id: crypto.randomUUID(),
+    email,
     name,
     passwordHash: await hashPassword(password),
     createdAt: new Date().toISOString(),
@@ -407,11 +397,11 @@ async function loginSelectedProfile() {
     await loginRemoteProfile();
     return;
   }
-  const userId = document.querySelector("#profile-select").value;
+  const email = document.querySelector("#profile-email").value.trim();
   const password = document.querySelector("#profile-password").value;
-  const user = appState.store.users.find((item) => item.id === userId);
+  const user = appState.store.users.find((item) => normalize(item.email) === normalize(email));
   if (!user) {
-    renderLogin("Selectionnez ou creez un profil.");
+    renderLogin("Aucun profil local trouve pour cet email.");
     return;
   }
   const passwordHash = await hashPassword(password);
@@ -455,7 +445,7 @@ async function createRemoteProfile() {
     return;
   }
   if (!data.session) {
-    renderLogin("Compte cree. Verifie ton email si la confirmation est activee, puis connecte-toi.");
+    renderLogin("Compte cree dans Supabase. Verifie ton email si la confirmation est activee, puis connecte-toi.");
     return;
   }
   await upsertRemoteProfile(data.user.id, displayName);
