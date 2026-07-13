@@ -8,3 +8,4 @@ dist/
 build/
 *.spec
 *.sqlite3
+supabase/.temp/

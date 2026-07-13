@@ -32,18 +32,22 @@
             <span></span>
           </div>
           <h2>Connexion</h2>
-          <p>Choisis ou cree ton espace personnel local pour separer tes progres.</p>
-          <label>
+          <p id="auth-mode-copy">Connecte-toi pour retrouver ton tableau de bord et tes revisions.</p>
+          <label id="local-profile-row">
             Profil
             <select id="profile-select"></select>
           </label>
           <label>
-            Nom du nouveau profil
+            Email
+            <input id="profile-email" type="email" placeholder="alexandre@example.com" autocomplete="email" />
+          </label>
+          <label>
+            Nom du profil
             <input id="profile-name" type="text" placeholder="Ex. Alexandre" autocomplete="username" />
           </label>
           <label>
-            Mot de passe local
-            <input id="profile-password" type="password" placeholder="Optionnel pour les anciens profils" autocomplete="current-password" />
+            Mot de passe
+            <input id="profile-password" type="password" placeholder="Minimum 6 caracteres" autocomplete="current-password" />
           </label>
           <div class="actions">
             <button class="primary" id="login-button">Se connecter</button>
@@ -123,6 +127,8 @@
       </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

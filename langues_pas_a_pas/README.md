@@ -51,6 +51,9 @@ progression, les reponses, les revisions et les imports dans `localStorage`.
 Elle propose aussi des profils locaux avec login: chaque utilisateur conserve son
 propre espace personnel, ses imports, ses scores et ses revisions.
 
+La version web peut aussi utiliser Supabase Auth + Postgres pour synchroniser les
+profils et tableaux de bord. Voir [SUPABASE.md](SUPABASE.md).
+
 ```bash
 python3 -m http.server 8765
 ```

@@ -4,6 +4,9 @@ const ACCOUNTS_KEY = "lpp_accounts_v1";
 const appState = {
   seedData: null,
   data: null,
+  backend: "local",
+  supabase: null,
+  session: null,
   currentSituation: null,
   currentExerciseIndex: 0,
   correctCount: 0,
@@ -92,6 +95,10 @@ function saveAccountStore() {
 
 function saveLocalState() {
   if (!appState.user) return;
+  if (appState.backend === "supabase") {
+    syncRemoteState();
+    return;
+  }
   appState.user.data = appState.local;
   appState.store.currentUserId = appState.user.id;
   saveAccountStore();
@@ -109,6 +116,107 @@ async function hashPassword(password) {
   const bytes = new TextEncoder().encode(password);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function getSupabaseConfig() {
+  const config = window.LPP_SUPABASE;
+  if (!config?.url || !config?.anonKey) return null;
+  if (config.anonKey.includes("COLLE_ICI")) return null;
+  return config;
+}
+
+function initSupabaseClient() {
+  const config = getSupabaseConfig();
+  if (!config || !window.supabase?.createClient) {
+    appState.backend = "local";
+    return;
+  }
+  appState.supabase = window.supabase.createClient(config.url, config.anonKey);
+  appState.backend = "supabase";
+}
+
+async function loadRemoteSession() {
+  if (appState.backend !== "supabase") return null;
+  const { data, error } = await appState.supabase.auth.getSession();
+  if (error) {
+    console.warn("Supabase session error", error);
+    return null;
+  }
+  appState.session = data.session;
+  return data.session;
+}
+
+async function loadRemoteUserState(session) {
+  if (!session?.user) return false;
+  const userId = session.user.id;
+  const email = session.user.email || "";
+  const { data: profile } = await appState.supabase
+    .from("profiles")
+    .select("id, display_name, created_at")
+    .eq("id", userId)
+    .maybeSingle();
+  const displayName = profile?.display_name || email.split("@")[0] || "Utilisateur";
+  let { data: stateRow, error } = await appState.supabase
+    .from("user_state")
+    .select("imported_payloads, progress, answers, reviews, last_situation_slug")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) console.warn("Supabase state read error", error);
+  if (!stateRow) {
+    const { data } = await appState.supabase
+      .from("user_state")
+      .insert({ user_id: userId })
+      .select("imported_payloads, progress, answers, reviews, last_situation_slug")
+      .single();
+    stateRow = data;
+  }
+  appState.user = {
+    id: userId,
+    email,
+    name: displayName,
+    createdAt: profile?.created_at || session.user.created_at || new Date().toISOString(),
+    remote: true,
+  };
+  appState.local = {
+    importedPayloads: stateRow?.imported_payloads || [],
+    progress: stateRow?.progress || {},
+    answers: stateRow?.answers || [],
+    reviews: stateRow?.reviews || {},
+    lastSituationSlug: stateRow?.last_situation_slug || null,
+  };
+  return true;
+}
+
+let syncTimer = null;
+
+function syncRemoteState() {
+  if (appState.backend !== "supabase" || !appState.user) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    const payload = {
+      user_id: appState.user.id,
+      imported_payloads: appState.local.importedPayloads,
+      progress: appState.local.progress,
+      answers: appState.local.answers,
+      reviews: appState.local.reviews,
+      last_situation_slug: appState.local.lastSituationSlug,
+    };
+    const { error } = await appState.supabase.from("user_state").upsert(payload, {
+      onConflict: "user_id",
+    });
+    if (error) console.warn("Supabase sync error", error);
+  }, 250);
+}
+
+async function upsertRemoteProfile(userId, displayName) {
+  const { error } = await appState.supabase.from("profiles").upsert(
+    {
+      id: userId,
+      display_name: displayName,
+    },
+    { onConflict: "id" }
+  );
+  if (error) throw error;
 }
 
 function escapeHtml(value) {
@@ -155,11 +263,19 @@ function mergePayloads(seedPayload, importedPayloads) {
 }
 
 async function boot() {
+  initSupabaseClient();
   const response = await fetch("../data/seed/situations_seed.json");
   const seedPayload = await response.json();
   appState.seedData = seedPayload;
-  const activeUser = appState.store.users.find((user) => user.id === appState.store.currentUserId);
-  if (activeUser) setActiveUser(activeUser);
+  let hasActiveUser = false;
+  if (appState.backend === "supabase") {
+    const session = await loadRemoteSession();
+    hasActiveUser = await loadRemoteUserState(session);
+  } else {
+    const activeUser = appState.store.users.find((user) => user.id === appState.store.currentUserId);
+    if (activeUser) setActiveUser(activeUser);
+    hasActiveUser = Boolean(activeUser);
+  }
   rebuildDataForCurrentUser();
   bindNavigation();
   bindAuthActions();
@@ -168,7 +284,7 @@ async function boot() {
   renderAccountStrip();
   renderSituations();
   renderSources();
-  showView(activeUser ? "home" : "login");
+  showView(hasActiveUser ? "home" : "login");
 }
 
 function rebuildDataForCurrentUser() {
@@ -221,6 +337,13 @@ function bindImportActions() {
 
 function renderLogin(message = "") {
   const select = document.querySelector("#profile-select");
+  const localProfileRow = document.querySelector("#local-profile-row");
+  const modeCopy = document.querySelector("#auth-mode-copy");
+  localProfileRow.hidden = appState.backend === "supabase";
+  modeCopy.textContent =
+    appState.backend === "supabase"
+      ? "Connexion Supabase: tes progres et ton tableau de bord sont synchronises en ligne."
+      : "Mode local: renseigne supabase-config.js pour activer la base de donnees en ligne.";
   select.innerHTML = "";
   if (!appState.store.users.length) {
     select.innerHTML = `<option value="">Aucun profil local</option>`;
@@ -237,6 +360,10 @@ function renderLogin(message = "") {
 }
 
 async function createProfile() {
+  if (appState.backend === "supabase") {
+    await createRemoteProfile();
+    return;
+  }
   const nameInput = document.querySelector("#profile-name");
   const passwordInput = document.querySelector("#profile-password");
   const name = nameInput.value.trim();
@@ -274,6 +401,10 @@ async function createProfile() {
 }
 
 async function loginSelectedProfile() {
+  if (appState.backend === "supabase") {
+    await loginRemoteProfile();
+    return;
+  }
   const userId = document.querySelector("#profile-select").value;
   const password = document.querySelector("#profile-password").value;
   const user = appState.store.users.find((item) => item.id === userId);
@@ -296,18 +427,96 @@ async function loginSelectedProfile() {
   showView("home");
 }
 
-function logout() {
+async function createRemoteProfile() {
+  const email = document.querySelector("#profile-email").value.trim();
+  const displayName = document.querySelector("#profile-name").value.trim();
+  const password = document.querySelector("#profile-password").value;
+  if (!email.includes("@")) {
+    renderLogin("Renseigne un email valide.");
+    return;
+  }
+  if (displayName.length < 2) {
+    renderLogin("Le nom du profil doit contenir au moins 2 caracteres.");
+    return;
+  }
+  if (password.length < 6) {
+    renderLogin("Le mot de passe doit contenir au moins 6 caracteres.");
+    return;
+  }
+  const { data, error } = await appState.supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { display_name: displayName } },
+  });
+  if (error) {
+    renderLogin(error.message);
+    return;
+  }
+  if (!data.session) {
+    renderLogin("Compte cree. Verifie ton email si la confirmation est activee, puis connecte-toi.");
+    return;
+  }
+  await upsertRemoteProfile(data.user.id, displayName);
+  await loadRemoteUserState(data.session);
+  rebuildDataForCurrentUser();
+  clearAuthInputs();
+  renderAccountStrip();
+  renderSituations();
+  renderSources();
+  showView("home");
+}
+
+async function loginRemoteProfile() {
+  const email = document.querySelector("#profile-email").value.trim();
+  const password = document.querySelector("#profile-password").value;
+  const displayName = document.querySelector("#profile-name").value.trim();
+  if (!email.includes("@") || !password) {
+    renderLogin("Renseigne ton email et ton mot de passe.");
+    return;
+  }
+  const { data, error } = await appState.supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    renderLogin(error.message);
+    return;
+  }
+  if (displayName) await upsertRemoteProfile(data.user.id, displayName);
+  await loadRemoteUserState(data.session);
+  rebuildDataForCurrentUser();
+  clearAuthInputs();
+  renderAccountStrip();
+  renderSituations();
+  renderSources();
+  showView("home");
+}
+
+function clearAuthInputs() {
+  document.querySelector("#profile-email").value = "";
+  document.querySelector("#profile-name").value = "";
+  document.querySelector("#profile-password").value = "";
+  renderLogin();
+}
+
+async function logout() {
   saveLocalState();
+  if (appState.backend === "supabase") {
+    await appState.supabase.auth.signOut();
+  }
   appState.user = null;
   appState.local = defaultLocalState();
-  appState.store.currentUserId = null;
-  saveAccountStore();
+  if (appState.backend === "local") {
+    appState.store.currentUserId = null;
+    saveAccountStore();
+  }
   renderLogin();
   renderAccountStrip();
   showView("login");
 }
 
 function deleteCurrentProfile() {
+  if (appState.backend === "supabase") {
+    alert("La suppression complete d'un compte Supabase doit se faire via une fonction serveur ou le dashboard Supabase.");
+    return;
+  }
   if (!appState.user) return;
   if (!confirm(`Supprimer le profil "${appState.user.name}" et toutes ses donnees locales ?`)) return;
   appState.store.users = appState.store.users.filter((user) => user.id !== appState.user.id);
@@ -327,7 +536,7 @@ function renderAccountStrip() {
     return;
   }
   strip.innerHTML = `
-    <span><strong>${escapeHtml(appState.user.name)}</strong> · espace personnel local</span>
+    <span><strong>${escapeHtml(appState.user.name)}</strong> · ${appState.backend === "supabase" ? "espace synchronise Supabase" : "espace personnel local"}</span>
     <div class="actions">
       <button data-view="account">Compte</button>
       <button id="logout-button">Deconnexion</button>
@@ -341,6 +550,20 @@ function renderAccount() {
   const content = document.querySelector("#account-content");
   if (!appState.user) {
     content.innerHTML = "<p>Aucun profil connecte.</p>";
+    return;
+  }
+  if (appState.backend === "supabase") {
+    content.innerHTML = `
+      <p>Profil connecte: <strong>${escapeHtml(appState.user.name)}</strong></p>
+      <p class="meta">${escapeHtml(appState.user.email || "")}</p>
+      <div class="actions">
+        <button id="account-logout">Deconnexion</button>
+        <button id="export-remote-data">Exporter mes donnees</button>
+      </div>
+      <p>Les progres, reponses, revisions et imports sont enregistres dans Supabase avec Row Level Security.</p>
+    `;
+    content.querySelector("#account-logout").addEventListener("click", logout);
+    content.querySelector("#export-remote-data").addEventListener("click", exportLocalData);
     return;
   }
   const users = appState.store.users
@@ -855,7 +1078,8 @@ function resetLocalData() {
   renderSituations();
   renderSources();
   renderDashboard();
-  document.querySelector("#import-result").textContent = "Donnees du profil reinitialisees.";
+  const output = document.querySelector("#import-result");
+  if (output) output.textContent = "Donnees du profil reinitialisees.";
 }
 
 function addHours(hours) {
