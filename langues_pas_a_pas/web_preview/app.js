@@ -38,6 +38,16 @@ const REQUIRED_EXERCISE_FIELDS = [
 
 const views = [...document.querySelectorAll(".view")];
 
+window.addEventListener("error", (event) => {
+  const message = event.error?.message || event.message || "Erreur JavaScript inconnue.";
+  showLoginMessage(`Erreur application: ${message}`, true);
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+  const message = event.reason?.message || String(event.reason || "Erreur reseau inconnue.");
+  showLoginMessage(`Erreur Supabase: ${message}`, true);
+});
+
 function defaultLocalState() {
   return {
     importedPayloads: [],
@@ -133,6 +143,18 @@ function initSupabaseClient() {
   }
   appState.supabase = window.supabase.createClient(config.url, config.anonKey);
   appState.backend = "supabase";
+}
+
+function showLoginMessage(message, isError = true) {
+  const target = document.querySelector("#login-message");
+  if (!target) return;
+  target.textContent = message;
+  target.classList.toggle("ok", !isError);
+}
+
+function setAuthBusy(isBusy) {
+  document.querySelector("#login-button").disabled = isBusy;
+  document.querySelector("#create-profile-button").disabled = isBusy;
 }
 
 async function loadRemoteSession() {
@@ -342,7 +364,7 @@ function renderLogin(message = "") {
     isSupabase
       ? "Connexion Supabase: tes progres et ton tableau de bord sont synchronises en ligne."
       : "Mode local: renseigne supabase-config.js pour activer la base de donnees en ligne.";
-  document.querySelector("#login-message").textContent = message;
+  showLoginMessage(message, !message.includes("cree") && !message.includes("connecte"));
 }
 
 async function createProfile() {
@@ -420,65 +442,84 @@ async function loginSelectedProfile() {
 }
 
 async function createRemoteProfile() {
-  const email = document.querySelector("#profile-email").value.trim();
-  const displayName = document.querySelector("#profile-name").value.trim();
-  const password = document.querySelector("#profile-password").value;
-  if (!email.includes("@")) {
-    renderLogin("Renseigne un email valide.");
-    return;
+  setAuthBusy(true);
+  showLoginMessage("Creation du compte Supabase en cours...", false);
+  try {
+    const email = document.querySelector("#profile-email").value.trim();
+    const displayName = document.querySelector("#profile-name").value.trim();
+    const password = document.querySelector("#profile-password").value;
+    if (!email.includes("@")) {
+      renderLogin("Renseigne un email valide.");
+      return;
+    }
+    if (displayName.length < 2) {
+      renderLogin("Le nom du profil doit contenir au moins 2 caracteres.");
+      return;
+    }
+    if (password.length < 6) {
+      renderLogin("Le mot de passe doit contenir au moins 6 caracteres.");
+      return;
+    }
+    const { data, error } = await appState.supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { display_name: displayName } },
+    });
+    if (error) {
+      renderLogin(error.message);
+      return;
+    }
+    if (!data.session) {
+      showLoginMessage(
+        "Compte cree dans Supabase. Si la confirmation email est activee, valide ton email puis clique sur Se connecter.",
+        false
+      );
+      return;
+    }
+    await upsertRemoteProfile(data.user.id, displayName);
+    await loadRemoteUserState(data.session);
+    rebuildDataForCurrentUser();
+    clearAuthInputs();
+    renderAccountStrip();
+    renderSituations();
+    renderSources();
+    showView("home");
+  } catch (error) {
+    renderLogin(error.message || "Impossible de creer le compte.");
+  } finally {
+    setAuthBusy(false);
   }
-  if (displayName.length < 2) {
-    renderLogin("Le nom du profil doit contenir au moins 2 caracteres.");
-    return;
-  }
-  if (password.length < 6) {
-    renderLogin("Le mot de passe doit contenir au moins 6 caracteres.");
-    return;
-  }
-  const { data, error } = await appState.supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { display_name: displayName } },
-  });
-  if (error) {
-    renderLogin(error.message);
-    return;
-  }
-  if (!data.session) {
-    renderLogin("Compte cree dans Supabase. Verifie ton email si la confirmation est activee, puis connecte-toi.");
-    return;
-  }
-  await upsertRemoteProfile(data.user.id, displayName);
-  await loadRemoteUserState(data.session);
-  rebuildDataForCurrentUser();
-  clearAuthInputs();
-  renderAccountStrip();
-  renderSituations();
-  renderSources();
-  showView("home");
 }
 
 async function loginRemoteProfile() {
-  const email = document.querySelector("#profile-email").value.trim();
-  const password = document.querySelector("#profile-password").value;
-  const displayName = document.querySelector("#profile-name").value.trim();
-  if (!email.includes("@") || !password) {
-    renderLogin("Renseigne ton email et ton mot de passe.");
-    return;
+  setAuthBusy(true);
+  showLoginMessage("Connexion en cours...", false);
+  try {
+    const email = document.querySelector("#profile-email").value.trim();
+    const password = document.querySelector("#profile-password").value;
+    const displayName = document.querySelector("#profile-name").value.trim();
+    if (!email.includes("@") || !password) {
+      renderLogin("Renseigne ton email et ton mot de passe.");
+      return;
+    }
+    const { data, error } = await appState.supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      renderLogin(error.message);
+      return;
+    }
+    if (displayName) await upsertRemoteProfile(data.user.id, displayName);
+    await loadRemoteUserState(data.session);
+    rebuildDataForCurrentUser();
+    clearAuthInputs();
+    renderAccountStrip();
+    renderSituations();
+    renderSources();
+    showView("home");
+  } catch (error) {
+    renderLogin(error.message || "Impossible de se connecter.");
+  } finally {
+    setAuthBusy(false);
   }
-  const { data, error } = await appState.supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    renderLogin(error.message);
-    return;
-  }
-  if (displayName) await upsertRemoteProfile(data.user.id, displayName);
-  await loadRemoteUserState(data.session);
-  rebuildDataForCurrentUser();
-  clearAuthInputs();
-  renderAccountStrip();
-  renderSituations();
-  renderSources();
-  showView("home");
 }
 
 function clearAuthInputs() {

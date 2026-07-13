@@ -321,6 +321,10 @@ pre {
   font-weight: 700;
 }
 
+.form-message.ok {
+  color: var(--green);
+}
+
 .profile-row {
   display: flex;
   align-items: center;
