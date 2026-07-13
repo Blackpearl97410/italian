@@ -17,6 +17,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   background:
@@ -218,6 +222,7 @@ button:disabled {
 }
 
 input[type="text"],
+input[type="email"],
 input[type="password"],
 input[type="file"],
 select {

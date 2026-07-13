@@ -339,9 +339,11 @@ function renderLogin(message = "") {
   const select = document.querySelector("#profile-select");
   const localProfileRow = document.querySelector("#local-profile-row");
   const modeCopy = document.querySelector("#auth-mode-copy");
-  localProfileRow.hidden = appState.backend === "supabase";
+  const isSupabase = appState.backend === "supabase";
+  localProfileRow.hidden = isSupabase;
+  localProfileRow.style.display = isSupabase ? "none" : "";
   modeCopy.textContent =
-    appState.backend === "supabase"
+    isSupabase
       ? "Connexion Supabase: tes progres et ton tableau de bord sont synchronises en ligne."
       : "Mode local: renseigne supabase-config.js pour activer la base de donnees en ligne.";
   select.innerHTML = "";
