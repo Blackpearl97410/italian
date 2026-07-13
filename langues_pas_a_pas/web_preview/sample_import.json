@@ -1,0 +1,50 @@
+{
+  "source": {
+    "name": "Exemple import web local",
+    "url": "manual://web-preview/sample-import",
+    "source_type": "manual_editorial_content",
+    "license": "manual",
+    "retrieved_at": "2026-07-13",
+    "reliability_score": 4,
+    "notes": "Exemple cree pour tester l'import de la version web."
+  },
+  "situations": [
+    {
+      "slug": "demander-aide-web",
+      "title": "Demander de l'aide",
+      "level": "A1",
+      "objective": "Savoir demander de l'aide simplement en anglais et en italien.",
+      "order_index": 20,
+      "phrases": [
+        {
+          "fr_text": "Pouvez-vous m'aider ?",
+          "en_text": "Can you help me?",
+          "it_text": "Mi puo aiutare?",
+          "explanation": "L'anglais utilise Can you pour une demande directe et courante. L'italien Mi puo aiutare est une formule polie.",
+          "common_trap": "Ne pas traduire mot a mot par Can you to help me."
+        }
+      ],
+      "grammar_points": [
+        {
+          "title": "Demander avec un verbe modal",
+          "explanation": "En anglais, can est suivi directement de la base verbale help, sans to.",
+          "example_fr": "Pouvez-vous m'aider ?",
+          "example_en": "Can you help me?",
+          "example_it": "Mi puo aiutare?"
+        }
+      ],
+      "exercises": [
+        {
+          "phrase_fr": "Pouvez-vous m'aider ?",
+          "type": "error_correction",
+          "question": "Corrigez l'erreur : Can you to help me?",
+          "correct_answer": "Can you help me?",
+          "options": [],
+          "explanation_correct": "Apres can, on utilise le verbe sans to.",
+          "explanation_wrong": "En anglais, can est suivi directement de help. Dites Can you help me?",
+          "difficulty": 1
+        }
+      ]
+    }
+  ]
+}

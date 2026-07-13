@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Langues Pas a Pas - Preview Web</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>Langues Pas a Pas</h1>
+          <p>Version web locale de la V1+</p>
+        </div>
+        <nav>
+          <button data-view="home">Accueil</button>
+          <button data-view="situations">Situations</button>
+          <button data-view="dashboard">Dashboard</button>
+          <button data-view="import">Importer</button>
+          <button data-view="sources">Sources</button>
+          <button data-view="account">Compte</button>
+        </nav>
+      </header>
+      <div id="account-strip" class="account-strip"></div>
+
+      <section id="login" class="view active">
+        <div class="login-shell">
+          <div class="brand-mark">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <h2>Connexion</h2>
+          <p id="auth-mode-copy">Connecte-toi pour retrouver ton tableau de bord et tes revisions.</p>
+          <label>
+            Email
+            <input id="profile-email" type="email" placeholder="alexandre@example.com" autocomplete="email" />
+          </label>
+          <label>
+            Nom du profil
+            <input id="profile-name" type="text" placeholder="Ex. Alexandre" autocomplete="username" />
+          </label>
+          <label>
+            Mot de passe
+            <input id="profile-password" type="password" placeholder="Minimum 6 caracteres" autocomplete="current-password" />
+          </label>
+          <div class="actions">
+            <button class="primary" id="login-button">Se connecter</button>
+            <button id="create-profile-button">Creer le profil</button>
+          </div>
+          <p id="login-message" class="form-message"></p>
+        </div>
+      </section>
+
+      <section id="home" class="view">
+        <div class="intro">
+          <h2>Apprendre par situations reelles</h2>
+          <p>
+            Compare le francais, l'anglais et l'italien, puis teste-toi avec des corrections
+            pedagogiques.
+          </p>
+          <button class="primary" data-view="situations">Commencer</button>
+          <button data-action="continue">Continuer</button>
+        </div>
+      </section>
+
+      <section id="situations" class="view">
+        <div class="section-header">
+          <h2>Parcours</h2>
+          <div class="filters">
+            <button data-filter="all" class="active">Tous</button>
+            <button data-filter="A1">A1</button>
+            <button data-filter="A2">A2</button>
+            <button data-filter="B1">B1</button>
+          </div>
+        </div>
+        <div id="situation-list" class="situation-list"></div>
+      </section>
+
+      <section id="lesson" class="view">
+        <button class="ghost" data-view="situations">Retour</button>
+        <div id="lesson-content"></div>
+      </section>
+
+      <section id="exercise" class="view">
+        <button class="ghost" id="back-to-lesson">Retour lecon</button>
+        <div id="exercise-content"></div>
+      </section>
+
+      <section id="dashboard" class="view">
+        <h2>Tableau de bord</h2>
+        <div id="dashboard-content" class="dashboard-grid"></div>
+        <div id="mistake-content" class="panel"></div>
+      </section>
+
+      <section id="import" class="view">
+        <h2>Importer du contenu source</h2>
+        <div class="panel">
+          <p>
+            Import JSON compatible avec le format V1+ ou CSV simple. Les donnees sont validees,
+            dedoublonnees par slug, puis stockees dans le navigateur.
+          </p>
+          <input id="import-file" type="file" accept=".json,.csv,application/json,text/csv" />
+          <div class="actions">
+            <button id="validate-import">Valider</button>
+            <button class="primary" id="run-import">Importer</button>
+            <button id="export-data">Exporter donnees</button>
+            <button class="danger" id="reset-local-data">Reinitialiser local</button>
+          </div>
+          <pre id="import-result"></pre>
+        </div>
+      </section>
+
+      <section id="sources" class="view">
+        <h2>Sources</h2>
+        <div id="source-list" class="situation-list"></div>
+      </section>
+
+      <section id="account" class="view">
+        <h2>Espace personnel</h2>
+        <div id="account-content" class="panel"></div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

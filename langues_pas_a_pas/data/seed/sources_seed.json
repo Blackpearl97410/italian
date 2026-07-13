@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Council of Europe - CEFR level descriptions",
+    "url": "https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions",
+    "source_type": "official_framework",
+    "license": "official_reference",
+    "retrieved_at": "2026-07-07",
+    "reliability_score": 5,
+    "notes": "Reference officielle pour organiser les niveaux A1, A2, B1."
+  },
+  {
+    "name": "Tatoeba terms of use",
+    "url": "https://tatoeba.org/en/terms_of_use",
+    "source_type": "open_corpus_license_reference",
+    "license": "CC BY 2.0 FR for many textual sentences",
+    "retrieved_at": "2026-07-07",
+    "reliability_score": 4,
+    "notes": "Reference de licence pour de futurs imports controles avec attribution."
+  },
+  {
+    "name": "Creative Commons BY-SA 4.0 deed",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+    "source_type": "license_reference",
+    "license": "CC BY-SA 4.0",
+    "retrieved_at": "2026-07-07",
+    "reliability_score": 4,
+    "notes": "Reference generale pour comprendre attribution et partage dans les memes conditions."
+  }
+]
+
